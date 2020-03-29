@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>Responsive Starter Code</title>
+        <link rel="stylesheet" type="text/css" href="/node_modules/primeicons/primeicons.css" />
+<link rel="stylesheet" type="text/css" href="/node_modules/primeng/resources/themes/nova-light/theme.css" />
+<link rel="stylesheet" type="text/css" href="/node_modules/primeng/resources/primeng.min.css" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+  <body>
+    <script src = "./d3/d3.min.js"></script>
+    <div class="container-fluid">
+        <div class="row h-50">
+            <div class="col-9 left" id="svgcontainer">
+                <app-celestial-map></app-celestial-map>
+            </div>
+            <div class="col-3 right" id="svgcontainer2">
+            </div>
+        </div>
+        <div class="row h-50" id="bottom-container">
+            <div class="col-9 left" id="sky-table">
+                <app-observations-table></app-observations-table>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>

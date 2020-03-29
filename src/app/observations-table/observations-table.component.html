@@ -1,0 +1,26 @@
+<p-table [value]="observations">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Id</th>
+            <th>Coordinate X</th>
+            <th>Coordinate Y</th>
+            <th>Weight</th>
+            <th>Priority</th>
+            <th>J Mag</th>
+            <th>K Mag</th>
+            <th>Comment</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-observation>
+        <tr>
+            <td>{{observation.id}}</td>
+            <td>{{observation.xCoordinate}}</td>
+            <td>{{observation.yCoordinate}}</td>
+            <td>{{observation.weight}}</td>
+            <td>{{observation.priority}}</td>
+            <td>{{observation.jMag}}</td>
+            <td>{{observation.kMag}}</td>
+            <td>{{observation.comment}}</td>
+        </tr>
+    </ng-template>
+</p-table>
