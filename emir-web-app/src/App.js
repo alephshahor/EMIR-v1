@@ -30,7 +30,7 @@ class App extends Component {
           <div className="row">
             <div className="col-6" id="canvas-container">
               <Canvas canvasWidth={this.state.canvasWidth}
-                canvasHeight={this.state.canvasHeight}
+                canvasHeight={this.state.canvasWidth}
               />
             </div>
           </div>
