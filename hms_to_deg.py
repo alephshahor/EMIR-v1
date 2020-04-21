@@ -29,7 +29,6 @@ with open(input_path, 'r') as input_file:
     for line in csv_reader:
         line[0] = Angle(line[0]).degree
         line[1] = Angle(line[1]).degree
-        print(line)
         deg_coordinates.append(line)
 
 

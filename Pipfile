@@ -9,6 +9,8 @@ verify_ssl = true
 daphne = "*"
 numpy = "*"
 astropy = "*"
+django = "*"
+djangorestframework = "*"
 
 [requires]
 python_version = "3.7"
