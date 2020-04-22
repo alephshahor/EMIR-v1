@@ -5,7 +5,12 @@ export default class Canvas extends Component {
 
     constructor(props){
         super(props);
-        this.handleMouseClick = this.handleMouseClick.bind(this)
+        this.onMouseClickDown = this.onMouseClickDown.bind(this)
+        this.onMouseClickUp = this.onMouseClickUp.bind(this)
+        this.onMouseMove = this.onMouseMove.bind(this)
+        this.state = {
+            dragging: false
+        }
     }
 
     componentDidUpdate(prevProps){
@@ -16,6 +21,17 @@ export default class Canvas extends Component {
         this.centerY = this.props.canvasHeight / 2;
         this.drawCanvas();
         this.drawEmirVisionField();
+    }
+
+
+    redrawCanvas(){
+        this.clearCanvas();
+        this.drawCanvas();
+        this.drawEmirVisionField();
+    }
+        
+    clearCanvas(){
+        this.ctx.clearRect(0,0, this.props.canvasWidth, this.props.canvasHeight);
     }
 
     drawPoints(){
@@ -102,19 +118,40 @@ export default class Canvas extends Component {
         this.ctx.fillRect(startX, startY, endX, endY); 
     }
 
-
-    handleMouseClick(event){
+    onMouseClickDown(event){
+        this.redrawCanvas();
+        this.dragging = true
         console.log("Position: ", event.clientX, event.clientY)
+        let { x,y } = this.calculateEmirFieldCenter(event)
+        this.drawEmirVisionField(x,y)
+    }
+
+    calculateEmirFieldCenter(event){
         let offsetX = document.getElementById("canvas").getBoundingClientRect().left
         let offsetY = document.getElementById("canvas").getBoundingClientRect().top
         let x = (event.clientX - offsetX) - ((this.props.canvasWidth * 0.1) / 2)
         let y = (event.clientY - offsetY) - ((this.props.canvasWidth * 0.1) / 2)
-        this.drawEmirVisionField(x,y)
+        return { x, y }
+    }
+
+    onMouseClickUp(event){
+        this.dragging = false
+        console.log("Released")
+    }
+
+    onMouseMove(event){
+        if(this.dragging){
+            this.redrawCanvas()
+            let { x,y } = this.calculateEmirFieldCenter(event)
+            this.drawEmirVisionField(x,y)
+        }
     }
 
     render(){
         return (
-            <canvas id="canvas" ref="canvas" width={this.props.canvasWidth} height={this.props.canvasHeight} onClick={(e) => this.handleMouseClick(e)}/>
+            <canvas id="canvas" ref="canvas" width={this.props.canvasWidth} height={this.props.canvasHeight}
+                    onMouseDown={(e) => this.onMouseClickDown(e)} onMouseUp={(e) => this.onMouseClickUp(e)}
+                    onMouseMove={(e) => this.onMouseMove(e)}/>
         )
     }
 }
