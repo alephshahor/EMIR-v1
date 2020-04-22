@@ -3,18 +3,47 @@ import '../style/canvas.css'
 
 export default class Canvas extends Component {
 
+    state = {
+        stelarPoints: null
+    }
 
-    componentDidUpdate(){
+    componentDidUpdate(prevProps){
+
+        // TODO: context.clearRect(0, 0, canvas.width, canvas.height);
         this.ctx = this.refs.canvas.getContext("2d")
         this.centerX = this.props.canvasWidth / 2;
         this.centerY = this.props.canvasHeight / 2;
         this.drawCanvas()
     }
 
+    drawPoints(){
+        for(let i = 0; i < this.props.stelarPoints.length; i++){
+            this.drawPoint(this.props.stelarPoints[i].right_ascension * this.props.canvasWidth,
+                          this.props.stelarPoints[i].declination * this.props.canvasHeight)
+        }
+        
+    }
+
+
+    drawPoint(xPos, yPos){
+
+        let pointThickness = 2;
+        let pointColor = "#FFF"
+
+        this.ctx.strokeStyle = pointColor;
+        this.ctx.lineWidth = pointThickness;
+        this.ctx.beginPath();
+        this.ctx.arc(xPos, yPos, 2, 0, 2 * Math.PI, true);
+        this.ctx.stroke();
+    }
+
     drawCanvas(){
         this.addBackgroundColor()
         this.drawRectangle("#839192", 1, 0, 0, this.refs.canvas.width , this.refs.canvas.height);
         this.drawGrid();
+        if(this.props.stelarPoints != null){
+            this.drawPoints();
+        }
     }
 
     addBackgroundColor(){
