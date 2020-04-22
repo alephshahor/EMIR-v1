@@ -4,5 +4,5 @@ from .models import StelarObjects
 class StelarObjectsSerializer(serializers.ModelSerializer):
     class Meta:
         model = StelarObjects
-        fields = ('right_ascension','declination','priority')
+        fields = ('pk','right_ascension','declination','priority')
 
