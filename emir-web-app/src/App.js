@@ -10,15 +10,15 @@ import axios from 'axios';
 class App extends Component {
 
   state = {
-    canvasWidth: window.innerWidth * 0.5,
-    canvasHeight: window.innerHeight * 0.5,
+    canvasWidth: window.innerWidth * 0.33,
+    canvasHeight: window.innerWidth * 0.33, 
     stelarPoints: null 
   }
 
   calculateCanvasSize(){
       this.setState({
-        canvasWidth: window.innerWidth * 0.5,
-        canvasHeight: window.innerHeight * 0.5
+        canvasWidth: window.innerWidth * 0.33,
+        canvasHeight: window.innerWidth * 0.33
       })
   }
 
@@ -100,6 +100,9 @@ class App extends Component {
     return (
       <div className="App">
         <div className="container-fluid">
+          <div className="row">
+            <Navbar />
+          </div>
           <div className="row">
             <div className="col-6" id="canvas-container">
               <Canvas canvasWidth={this.state.canvasWidth}

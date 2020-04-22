@@ -3,17 +3,14 @@ import '../style/canvas.css'
 
 export default class Canvas extends Component {
 
-    state = {
-        stelarPoints: null
-    }
-
     componentDidUpdate(prevProps){
 
         // TODO: context.clearRect(0, 0, canvas.width, canvas.height);
         this.ctx = this.refs.canvas.getContext("2d")
         this.centerX = this.props.canvasWidth / 2;
         this.centerY = this.props.canvasHeight / 2;
-        this.drawCanvas()
+        this.drawCanvas();
+        this.drawEmirVisionField();
     }
 
     drawPoints(){
@@ -23,7 +20,6 @@ export default class Canvas extends Component {
         }
         
     }
-
 
     drawPoint(xPos, yPos){
 
@@ -44,6 +40,15 @@ export default class Canvas extends Component {
         if(this.props.stelarPoints != null){
             this.drawPoints();
         }
+    }
+
+    drawEmirVisionField(){
+        this.ctx.beginPath();
+        this.ctx.fillStyle = "#FFF"
+        this.ctx.globalAlpha = 0.25;
+        this.ctx.rect(0,0,this.props.canvasWidth * 0.1, this.props.canvasHeight * 0.1)
+        this.ctx.fill()
+        this.ctx.globalAlpha = 1;
     }
 
     addBackgroundColor(){
