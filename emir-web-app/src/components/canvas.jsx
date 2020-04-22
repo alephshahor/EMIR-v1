@@ -3,6 +3,11 @@ import '../style/canvas.css'
 
 export default class Canvas extends Component {
 
+    constructor(props){
+        super(props);
+        this.handleMouseClick = this.handleMouseClick.bind(this)
+    }
+
     componentDidUpdate(prevProps){
 
         // TODO: context.clearRect(0, 0, canvas.width, canvas.height);
@@ -42,11 +47,11 @@ export default class Canvas extends Component {
         }
     }
 
-    drawEmirVisionField(){
+    drawEmirVisionField(x,y){
         this.ctx.beginPath();
         this.ctx.fillStyle = "#FFF"
         this.ctx.globalAlpha = 0.25;
-        this.ctx.rect(0,0,this.props.canvasWidth * 0.1, this.props.canvasHeight * 0.1)
+        this.ctx.rect(x,y,this.props.canvasWidth * 0.1, this.props.canvasHeight * 0.1)
         this.ctx.fill()
         this.ctx.globalAlpha = 1;
     }
@@ -97,9 +102,19 @@ export default class Canvas extends Component {
         this.ctx.fillRect(startX, startY, endX, endY); 
     }
 
+
+    handleMouseClick(event){
+        console.log("Position: ", event.clientX, event.clientY)
+        let offsetX = document.getElementById("canvas").getBoundingClientRect().left
+        let offsetY = document.getElementById("canvas").getBoundingClientRect().top
+        let x = (event.clientX - offsetX) - ((this.props.canvasWidth * 0.1) / 2)
+        let y = (event.clientY - offsetY) - ((this.props.canvasWidth * 0.1) / 2)
+        this.drawEmirVisionField(x,y)
+    }
+
     render(){
         return (
-            <canvas ref="canvas" width={this.props.canvasWidth} height={this.props.canvasHeight} />
+            <canvas id="canvas" ref="canvas" width={this.props.canvasWidth} height={this.props.canvasHeight} onClick={(e) => this.handleMouseClick(e)}/>
         )
     }
 }
