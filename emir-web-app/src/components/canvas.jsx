@@ -16,6 +16,7 @@ export default class Canvas extends Component {
     componentDidUpdate(prevProps){
 
         // TODO: context.clearRect(0, 0, canvas.width, canvas.height);
+        console.log(this.props.metadata)
         this.ctx = this.refs.canvas.getContext("2d")
         this.centerX = this.props.canvasWidth / 2;
         this.centerY = this.props.canvasHeight / 2;
@@ -65,9 +66,10 @@ export default class Canvas extends Component {
 
     drawEmirVisionField(x,y){
         this.ctx.beginPath();
-        this.ctx.fillStyle = "#FFF"
-        this.ctx.globalAlpha = 0.25;
-        this.ctx.rect(x,y,this.props.canvasWidth * 0.1, this.props.canvasHeight * 0.1)
+        this.ctx.fillStyle = "#F7937E"
+        this.ctx.globalAlpha = 0.75;
+        this.ctx.rect(x,y, (this.props.canvasWidth * this.props.emirVisionFieldDimension) / this.props.catalogDimensionInDegrees, 
+                           (this.props.canvasHeight * this.props.emirVisionFieldDimension) / this.props.catalogDimensionInDegrees)
         this.ctx.fill()
         this.ctx.globalAlpha = 1;
     }
