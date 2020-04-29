@@ -12,6 +12,9 @@ astropy = "*"
 django = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
+bokeh = "*"
+ipykernel = "*"
+pandas = "*"
 
 [requires]
 python_version = "3.7"

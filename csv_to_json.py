@@ -2,11 +2,11 @@ import csv
 import json
 import argparse
 
-parser = argparse.ArgumentParser(prog="dat_to_csv", description="Transform a .dat file into a .csv file")
+parser = argparse.ArgumentParser(prog="csv_to_json", description="Transform a .csv file into a .json file")
 
-parser.add_argument('input_file_path', help="The input .csv file full path ( hours / mins / seconds)")
+parser.add_argument('input_file_path', help="The input .csv file full path")
 
-parser.add_argument('out_file_path', help="The output .csv file full path ( deg )")
+parser.add_argument('out_file_path', help="The output .json file full path")
 
 args = parser.parse_args()
 
