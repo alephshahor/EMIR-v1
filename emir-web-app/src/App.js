@@ -4,6 +4,9 @@ import './style/App.css'
 
 import Navbar from './components/navbar'
 import Canvas from './components/canvas'
+import ToolbarButton from './components/toolbarButton'
+
+import { FaSearchPlus, FaSync, FaArrowsAlt, FaBorderNone } from 'react-icons/fa';
 
 import axios from 'axios';
 
@@ -48,12 +51,6 @@ class App extends Component {
 
     console.log(catalogAscensionDim)
     console.log(catalogDeclinationDim)
-    
-    /*let ascensionMinBound = (catalogAscensionDim / 2) - 0.5;
-    let ascensionMaxBound = (catalogAscensionDim / 2) + 0.5;
-
-    let declinationMinBound = (catalogAscensionDim / 2) - 0.5;
-    let declinationMaxBound = (catalogAscensionDim / 2) + 0.5;*/
 
     const catalogDimensionInDegrees = 0.35;
 
@@ -145,15 +142,23 @@ class App extends Component {
           <div className="row">
             <Navbar />
           </div>
-          <div className="row">
-            <div className="col-6" id="canvas-container">
-              <Canvas canvasWidth={this.state.canvasWidth}
-                canvasHeight={this.state.canvasWidth}
-                stelarPoints={this.state.stelarPoints}
-                catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
-                emirVisionFieldDimension={this.state.emirVisionFieldDimension}
-              />
+          <div className="row" id ="buttons-container-row">
+            <div className="col-4" id="buttons-container-col">
+              <ToolbarButton icon={<FaSearchPlus/>}></ToolbarButton>
+              <ToolbarButton icon={<FaSync/>}></ToolbarButton>
+              <ToolbarButton icon={<FaArrowsAlt/>}></ToolbarButton>
+              <ToolbarButton icon={<FaBorderNone/>}></ToolbarButton>
             </div>
+          </div>
+          <div className="row" id="canvas-container-row">
+           <div className="col-4" id="canvas-container-col">
+            <Canvas canvasWidth={this.state.canvasWidth}
+              canvasHeight={this.state.canvasWidth}
+              stelarPoints={this.state.stelarPoints}
+              catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
+              emirVisionFieldDimension={this.state.emirVisionFieldDimension}
+            />
+          </div>
           </div>
         </div>
       </div>

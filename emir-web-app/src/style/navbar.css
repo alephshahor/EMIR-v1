@@ -1,0 +1,15 @@
+nav{
+    width: 100%;
+    background-color: black;
+    display: inline-block;
+}
+
+img{
+    height: 5vh;
+    width: 5vh;
+}
+
+h1{
+    background-color: deepskyblue;
+    color: white;
+}

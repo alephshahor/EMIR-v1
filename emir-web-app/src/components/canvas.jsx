@@ -21,7 +21,7 @@ export default class Canvas extends Component {
         this.centerX = this.props.canvasWidth / 2;
         this.centerY = this.props.canvasHeight / 2;
         this.drawCanvas();
-        this.drawEmirVisionField();
+        this.drawEmirVisionField(); 
     }
 
 
