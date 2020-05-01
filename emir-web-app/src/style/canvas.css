@@ -1,3 +1,13 @@
+
+.App{
+
+}
+
+.container-fluid{
+    background-color: chartreuse;
+
+}
+
 canvas{
     background-color: rgba(255,0,0,0.5);
 }
@@ -13,13 +23,15 @@ canvas{
 }
 
 #buttons-container-col{
-    background-color: darksalmon;
+    margin: 0;
     padding-bottom: 20;
     display: flex;
     justify-content: space-between;
 }
 
 #buttons-container-row{
+    background-color: cornflowerblue;
     padding-bottom: 0.5vh;
     padding-top: 0.5vh;
 }
+

@@ -138,11 +138,9 @@ class App extends Component {
 
     return (
       <div className="App">
+            <Navbar></Navbar>
         <div className="container-fluid">
-          <div className="row">
-            <Navbar />
-          </div>
-          <div className="row" id ="buttons-container-row">
+          <div className="row" id="buttons-container-row">
             <div className="col-4" id="buttons-container-col">
               <ToolbarButton icon={<FaSearchPlus/>}></ToolbarButton>
               <ToolbarButton icon={<FaSync/>}></ToolbarButton>
