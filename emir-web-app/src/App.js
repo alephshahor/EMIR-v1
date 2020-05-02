@@ -23,7 +23,9 @@ class App extends Component {
     catalogDimensionInDegrees: null,
     emirVisionFieldDimension: 0.11,
     currentPanel: 'Zoom',
-    catalogDimensionInDegrees: 0.35 
+    catalogDimensionInDegrees: 0.35,
+    ascensionOffset: 0,
+    declinationOffset: 0
   }
 
   calculateCanvasSize(){
@@ -82,8 +84,8 @@ class App extends Component {
     let catalogAscensionDim = axisBounds.maximum_ascension - axisBounds.minimum_ascension
     let catalogDeclinationDim = axisBounds.maximum_declination - axisBounds.minimum_declination
 
-    let ascensionCenter = axisBounds.minimum_ascension + (catalogAscensionDim / 2)
-    let declinationCenter = axisBounds.minimum_declination + (catalogDeclinationDim / 2)
+    let ascensionCenter = axisBounds.minimum_ascension + (catalogAscensionDim / 2) + this.state.ascensionOffset
+    let declinationCenter = axisBounds.minimum_declination + (catalogDeclinationDim / 2) + this.state.declinationOffset
 
     let ascensionMinBound = ascensionCenter - this.state.catalogDimensionInDegrees / 2;
     let ascensionMaxBound = ascensionCenter + this.state.catalogDimensionInDegrees / 2;
@@ -160,7 +162,9 @@ class App extends Component {
           return (<RotationPanel></RotationPanel>)
           break;
         case 'Move':
-          return (<MovePanel></MovePanel>)
+          return (<MovePanel moveLeft={this.moveLeft} moveRight={this.moveRight}
+                             moveUp={this.moveUp} moveDown={this.moveDown}
+                             center={this.center}></MovePanel>)
           break;
       }
     }
@@ -186,6 +190,48 @@ class App extends Component {
       })
       this.treatPoints(this.state.originalStelarPoints);
     }
+
+    moveLeft = async () => {
+      const ascensionOffset_ = this.state.ascensionOffset;
+      let changeState = await this.setState({
+        ascensionOffset: ascensionOffset_ - 0.1
+      })
+      this.treatPoints(this.state.originalStelarPoints)
+    } 
+    
+    moveRight = async () => {
+      const ascensionOffset_ = this.state.ascensionOffset;
+      let changeState = await this.setState({
+        ascensionOffset: ascensionOffset_ + 0.1
+      })
+      this.treatPoints(this.state.originalStelarPoints)
+    }
+
+    moveUp = async () => {
+      const declinationOffset_ = this.state.declinationOffset;
+      let changeState = await this.setState({
+        declinationOffset: declinationOffset_ - 0.1
+      })
+      this.treatPoints(this.state.originalStelarPoints)
+    }
+
+    moveDown = async () => {
+      const declinationOffset_ = this.state.declinationOffset;
+      let changeState = await this.setState({
+        declinationOffset: declinationOffset_ + 0.1
+      })
+      this.treatPoints(this.state.originalStelarPoints)
+    }
+
+    center = async () => {
+      let changeState = await this.setState({
+        declinationOffset: 0,
+        ascensionOffset: 0
+      })
+      this.treatPoints(this.state.originalStelarPoints)
+    }
+
+
 
   render(){
 
