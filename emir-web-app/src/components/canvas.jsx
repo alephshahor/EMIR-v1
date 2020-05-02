@@ -16,7 +16,6 @@ export default class Canvas extends Component {
     componentDidUpdate(prevProps){
 
         // TODO: context.clearRect(0, 0, canvas.width, canvas.height);
-        console.log(this.props.metadata)
         this.ctx = this.refs.canvas.getContext("2d")
         this.centerX = this.props.canvasWidth / 2;
         this.centerY = this.props.canvasHeight / 2;

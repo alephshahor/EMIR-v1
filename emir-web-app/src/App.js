@@ -18,10 +18,12 @@ class App extends Component {
   state = {
     canvasWidth: window.innerWidth * 0.33,
     canvasHeight: window.innerWidth * 0.33, 
+    originalStelarPoints: null,
     stelarPoints: null,
     catalogDimensionInDegrees: null,
     emirVisionFieldDimension: 0.11,
-    currentPanel: 'Zoom'
+    currentPanel: 'Zoom',
+    catalogDimensionInDegrees: 0.35 
   }
 
   calculateCanvasSize(){
@@ -31,7 +33,7 @@ class App extends Component {
       })
   }
 
-  componentDidMount(){
+  async componentDidMount(){
 
     const handleResize = () => {
       this.calculateCanvasSize();
@@ -41,35 +43,53 @@ class App extends Component {
     handleResize();
 
     console.log("Hi")
-    this.fetchDataFromApi();
+
+    let response = await fetch("http://localhost:8000/emir/")
+    let stelarPoints = await response.json()
+    let stateSetted = await this.setState({originalStelarPoints: stelarPoints})
+    let log = await console.log("Hi fucking javascript", stelarPoints)
+    let treatPoints = await this.treatPoints(this.state.originalStelarPoints)
+
+    /*fetch("http://localhost:8000/emir/").then(
+      (response) => response.json()
+    ).then(
+      (stelarPoints) => this.setState({originalStelarPoints: stelarPoints})
+    ).then(
+      () => console.log("Hi 1", this.state.originalStelarPoints)
+    ).then(
+      () => this.treatPoints(this.state.originalStelarPoints)
+    )*/
+
+  //  let data = this.fetchDataFromApi().then(() => this.treatPoints(this.state.originalStelarPoints));
+
    }
 
-   fetchDataFromApi = async () => {
+   /* fetchDataFromApi = async () => {
 
     const response = await fetch("http://localhost:8000/emir/");
     let stelarPoints = await response.json();
+    let trythis = await this.setState({originalStelarPoints: stelarPoints})
+    console.log("Cucu: " , this.state.originalStelarPoints)
+    return true;
+   } */
 
-    let axisBounds = await this.findAxisBounds(stelarPoints)
+   treatPoints(StelarPoints){
+
+    let originalStelarPoints = StelarPoints;
+
+    let axisBounds = this.findAxisBounds(originalStelarPoints)
 
     let catalogAscensionDim = axisBounds.maximum_ascension - axisBounds.minimum_ascension
     let catalogDeclinationDim = axisBounds.maximum_declination - axisBounds.minimum_declination
 
-    console.log(catalogAscensionDim)
-    console.log(catalogDeclinationDim)
-
-    const catalogDimensionInDegrees = 0.35;
-
-
     let ascensionCenter = axisBounds.minimum_ascension + (catalogAscensionDim / 2)
     let declinationCenter = axisBounds.minimum_declination + (catalogDeclinationDim / 2)
 
-    let ascensionMinBound = ascensionCenter - catalogDimensionInDegrees / 2;
-    let ascensionMaxBound = ascensionCenter + catalogDimensionInDegrees / 2;
+    let ascensionMinBound = ascensionCenter - this.state.catalogDimensionInDegrees / 2;
+    let ascensionMaxBound = ascensionCenter + this.state.catalogDimensionInDegrees / 2;
 
-    let declinationMinBound = declinationCenter - catalogDimensionInDegrees / 2;
-    let declinationMaxBound = declinationCenter + catalogDimensionInDegrees / 2;
-
-    console.log(axisBounds)
+    let declinationMinBound = declinationCenter - this.state.catalogDimensionInDegrees / 2;
+    let declinationMaxBound = declinationCenter + this.state.catalogDimensionInDegrees / 2;
 
      axisBounds = { 
       minimum_ascension: ascensionMinBound,
@@ -78,18 +98,16 @@ class App extends Component {
       maximum_declination: declinationMaxBound
     }
 
-    console.log(axisBounds)
-
-    stelarPoints = await this.calculatePointsInCanvas(axisBounds, stelarPoints)
+    let stelarPoints_ = this.calculatePointsInCanvas(axisBounds, originalStelarPoints)
+    console.log(stelarPoints_)
 
     this.setState({
-      stelarPoints: stelarPoints,
-      catalogDimensionInDegrees: catalogDimensionInDegrees
+      stelarPoints: stelarPoints_
     })
-  
    }
 
-     findAxisBounds(stelarPoints){
+    findAxisBounds(stelarPoints){
+
         let minimum_ascension = stelarPoints[0]['right_ascension']
         let maximum_ascension = stelarPoints[0]['right_ascension']
 
@@ -110,15 +128,14 @@ class App extends Component {
         return { minimum_ascension, minimum_declination, maximum_ascension, maximum_declination }
    }
   
-  
     calculatePointsInCanvas(axisBounds, stelarPoints){
       let stelarPointsInCanvas = []
         for(let i = 0; i < stelarPoints.length; i++){
           let stelarPoint = stelarPoints[i]
-          if(stelarPoint.declination > axisBounds.minimum_declination && stelarPoint.declination < axisBounds.maximum_declination &&
+           if(stelarPoint.declination > axisBounds.minimum_declination && stelarPoint.declination < axisBounds.maximum_declination &&
              stelarPoint.right_ascension > axisBounds.minimum_ascension && stelarPoint.right_ascension < axisBounds.maximum_ascension){
-                stelarPoint = this.calculatePointInCanvas(axisBounds, stelarPoints[i])
-                stelarPointsInCanvas.push(stelarPoint)
+                let stelarPointCopy = this.calculatePointInCanvas(axisBounds, stelarPoint)
+                stelarPointsInCanvas.push(stelarPointCopy)
             }
         }
         return stelarPointsInCanvas;
@@ -126,23 +143,18 @@ class App extends Component {
 
     calculatePointInCanvas(axisBounds, stelarPoint){
 
-        let point =  stelarPoint;
+        let {pk, declination, right_ascension, prioriy} =  stelarPoint;
 
-        let declination = (stelarPoint['declination'] - axisBounds['minimum_declination']) / (axisBounds['maximum_declination'] - axisBounds['minimum_declination'])
-        let ascension = (stelarPoint['right_ascension']- axisBounds['minimum_ascension']) / (axisBounds['maximum_ascension'] - axisBounds['minimum_ascension'])
+        declination = (declination - axisBounds['minimum_declination']) / (axisBounds['maximum_declination'] - axisBounds['minimum_declination'])
+        right_ascension = (right_ascension - axisBounds['minimum_ascension']) / (axisBounds['maximum_ascension'] - axisBounds['minimum_ascension'])
 
-        
-        point['declination'] = declination
-        point['right_ascension'] = ascension
-
-
-        return point;
+        return {pk, declination, right_ascension, prioriy}
     } 
 
     displayToolPanel(type){
       switch(type){
         case 'Zoom':
-          return (<ZoomPanel></ZoomPanel>)
+          return (<ZoomPanel zoomIn={this.zoomIn} zoomOut={this.zoomOut}></ZoomPanel>)
           break;
         case 'Rotation':
           return (<RotationPanel></RotationPanel>)
@@ -157,6 +169,22 @@ class App extends Component {
       this.setState({
         currentPanel: panel
       })
+    }
+
+    zoomIn = async () => {
+      const catalogDimensionInDegrees_ = this.state.catalogDimensionInDegrees;
+      let changeState = await this.setState({
+        catalogDimensionInDegrees: catalogDimensionInDegrees_ - 0.1
+      })
+      this.treatPoints(this.state.originalStelarPoints);
+    }
+
+    zoomOut = async () => {
+      const catalogDimensionInDegrees_ = this.state.catalogDimensionInDegrees;
+      let changeState = await this.setState({
+        catalogDimensionInDegrees: catalogDimensionInDegrees_ + 0.1
+      })
+      this.treatPoints(this.state.originalStelarPoints);
     }
 
   render(){
