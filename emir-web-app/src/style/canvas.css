@@ -1,37 +1,8 @@
-
-.App{
-
-}
-
-.container-fluid{
-    background-color: chartreuse;
-
-}
-
 canvas{
     background-color: rgba(255,0,0,0.5);
 }
 
-#canvas-container-col{
-    /* background-color: green;  */
-    text-align: center;
+#canvas-container{
     padding: 0;
     margin: 0;
 }
-
-#canvas-container-row{
-}
-
-#buttons-container-col{
-    margin: 0;
-    padding-bottom: 20;
-    display: flex;
-    justify-content: space-between;
-}
-
-#buttons-container-row{
-    background-color: cornflowerblue;
-    padding-bottom: 0.5vh;
-    padding-top: 0.5vh;
-}
-

@@ -1,0 +1,17 @@
+.zoom-panel-container{
+    background-color: cyan;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.zoomInButton{
+    width: 25%;
+    margin-right: 0.75vh;
+    margin-bottom: 0.75vh;
+}
+
+.zoomOutButton{
+    width: 25%;
+}

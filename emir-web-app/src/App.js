@@ -5,6 +5,7 @@ import './style/App.css'
 import Navbar from './components/navbar'
 import Canvas from './components/canvas'
 import ToolbarButton from './components/toolbarButton'
+import ZoomPanel from './components/zoomPanel'
 
 import { FaSearchPlus, FaSync, FaArrowsAlt, FaBorderNone } from 'react-icons/fa';
 
@@ -157,6 +158,11 @@ class App extends Component {
               emirVisionFieldDimension={this.state.emirVisionFieldDimension}
             />
           </div>
+          </div>
+          <div className="row" id="tool-panel-container-row">
+            <div className="col-4" id="tool-panel-container-col">
+             <ZoomPanel></ZoomPanel> 
+            </div>
           </div>
         </div>
       </div>

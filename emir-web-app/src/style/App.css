@@ -1,8 +1,48 @@
-#canvas-container{
+.App{
     padding: 0;
     margin: 0;
 }
 
-.row{
+
+.container-fluid{
+    background-color: darkseagreen;
+    padding-right:0;
+    padding-left:0;
+    margin-right:auto;
+    margin-left:auto
 }
 
+#canvas-container-col{
+    /* background-color: green;  */
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+#canvas-container-row{
+}
+
+
+#buttons-container-col{
+    margin: 0;
+    padding-bottom: 20;
+    display: flex;
+    justify-content: space-between;
+}
+
+#buttons-container-row{
+    background-color: cornflowerblue;
+    padding-bottom: 0.5vh;
+    padding-top: 0.5vh;
+}
+
+
+#tool-panel-container-col{
+    background-color: darkgoldenrod;
+    padding: 0.5vh;
+}
+
+/* Why putting margin to zero creates a gap? */
+#tool-panel-container-row{
+    background-color: darkcyan;
+}
