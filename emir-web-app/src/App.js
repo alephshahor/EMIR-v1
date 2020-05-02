@@ -25,7 +25,9 @@ class App extends Component {
     currentPanel: 'Zoom',
     catalogDimensionInDegrees: 0.35,
     ascensionOffset: 0,
-    declinationOffset: 0
+    declinationOffset: 0,
+    applyRotation: false,
+    rotationAngle: 0 
   }
 
   calculateCanvasSize(){
@@ -75,11 +77,27 @@ class App extends Component {
     return true;
    } */
 
-   treatPoints(StelarPoints){
+   treatPoints(originalStelarPoints){
 
-    let originalStelarPoints = StelarPoints;
+    let originalStelarPoints_ = originalStelarPoints;
 
-    let axisBounds = this.findAxisBounds(originalStelarPoints)
+    if(this.state.applyRotation){
+      let originalStelarPointsCopy = [];
+      for(var i = 0; i < originalStelarPoints.length; i++){
+        let declination = originalStelarPoints[i]['declination']
+        let right_ascension = originalStelarPoints[i]['right_ascension']
+        let { y_: declination_ , x_: right_ascension_ } = this.applyRotation(this.state.rotationAngle, right_ascension, declination)
+        originalStelarPointsCopy.push({
+          declination: declination_,
+          right_ascension: right_ascension_,
+          prioriy: originalStelarPoints_[i]['prioriy'],
+          pk: originalStelarPoints_[i]['pk']
+        })
+      }
+      originalStelarPoints_ = originalStelarPointsCopy
+    }
+
+    let axisBounds = this.findAxisBounds(originalStelarPoints_)
 
     let catalogAscensionDim = axisBounds.maximum_ascension - axisBounds.minimum_ascension
     let catalogDeclinationDim = axisBounds.maximum_declination - axisBounds.minimum_declination
@@ -100,7 +118,7 @@ class App extends Component {
       maximum_declination: declinationMaxBound
     }
 
-    let stelarPoints_ = this.calculatePointsInCanvas(axisBounds, originalStelarPoints)
+    let stelarPoints_ = this.calculatePointsInCanvas(axisBounds, originalStelarPoints_)
     console.log(stelarPoints_)
 
     this.setState({
@@ -153,13 +171,27 @@ class App extends Component {
         return {pk, declination, right_ascension, prioriy}
     } 
 
+    sinDegrees(angleDegrees) {
+      return Math.sin(angleDegrees*Math.PI/180);
+    };
+
+    cosDegrees(angleDegrees) {
+      return Math.cos(angleDegrees*Math.PI/180);
+    };
+
+    applyRotation(rotation, x, y){
+      let x_ = (x * this.cosDegrees(rotation)) - (y * this.sinDegrees(rotation))
+      let y_ = (y * this.cosDegrees(rotation)) + (x * this.sinDegrees(rotation))
+      return {x_ , y_}
+    }
+
     displayToolPanel(type){
       switch(type){
         case 'Zoom':
           return (<ZoomPanel zoomIn={this.zoomIn} zoomOut={this.zoomOut}></ZoomPanel>)
           break;
         case 'Rotation':
-          return (<RotationPanel></RotationPanel>)
+          return (<RotationPanel rotate={this.rotate}></RotationPanel>)
           break;
         case 'Move':
           return (<MovePanel moveLeft={this.moveLeft} moveRight={this.moveRight}
@@ -229,6 +261,19 @@ class App extends Component {
         ascensionOffset: 0
       })
       this.treatPoints(this.state.originalStelarPoints)
+    }
+
+    rotate = async (angle) => {
+      let changeState = await this.setState({
+        applyRotation: true
+      })
+      changeState = await this.setState({
+        rotationAngle: angle 
+      })
+      this.treatPoints(this.state.originalStelarPoints)
+      changeState = await this.setState({
+        applyRotation: false
+      })
     }
 
 
