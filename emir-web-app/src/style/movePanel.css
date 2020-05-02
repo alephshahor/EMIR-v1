@@ -1,0 +1,12 @@
+.move-panel-container{
+    background-color: deepskyblue;
+    text-align: center;
+}
+
+.center-button{
+    margin: 0.75vh;
+}
+
+.arrow-down-button{
+    margin-bottom: 0.75vh;
+}

@@ -7,6 +7,7 @@ import Canvas from './components/canvas'
 import ToolbarButton from './components/toolbarButton'
 import ZoomPanel from './components/zoomPanel'
 import RotationPanel from './components/rotationPanel'
+import MovePanel from './components/movePanel'
 
 import { FaSearchPlus, FaSync, FaArrowsAlt, FaBorderNone } from 'react-icons/fa';
 
@@ -19,7 +20,8 @@ class App extends Component {
     canvasHeight: window.innerWidth * 0.33, 
     stelarPoints: null,
     catalogDimensionInDegrees: null,
-    emirVisionFieldDimension: 0.11
+    emirVisionFieldDimension: 0.11,
+    currentPanel: 'Zoom'
   }
 
   calculateCanvasSize(){
@@ -38,6 +40,7 @@ class App extends Component {
     window.addEventListener('resize', handleResize)
     handleResize();
 
+    console.log("Hi")
     this.fetchDataFromApi();
    }
 
@@ -105,7 +108,7 @@ class App extends Component {
         }
 
         return { minimum_ascension, minimum_declination, maximum_ascension, maximum_declination }
-    }
+   }
   
   
     calculatePointsInCanvas(axisBounds, stelarPoints){
@@ -136,6 +139,26 @@ class App extends Component {
         return point;
     } 
 
+    displayToolPanel(type){
+      switch(type){
+        case 'Zoom':
+          return (<ZoomPanel></ZoomPanel>)
+          break;
+        case 'Rotation':
+          return (<RotationPanel></RotationPanel>)
+          break;
+        case 'Move':
+          return (<MovePanel></MovePanel>)
+          break;
+      }
+    }
+
+    setToolPanel(panel){
+      this.setState({
+        currentPanel: panel
+      })
+    }
+
   render(){
 
     return (
@@ -144,10 +167,10 @@ class App extends Component {
         <div className="container-fluid">
           <div className="row" id="buttons-container-row">
             <div className="col-4" id="buttons-container-col">
-              <ToolbarButton icon={<FaSearchPlus/>}></ToolbarButton>
-              <ToolbarButton icon={<FaSync/>}></ToolbarButton>
-              <ToolbarButton icon={<FaArrowsAlt/>}></ToolbarButton>
-              <ToolbarButton icon={<FaBorderNone/>}></ToolbarButton>
+              <ToolbarButton icon={<FaSearchPlus/>} setToolPanel={this.setToolPanel.bind(this)} buttonType={'Zoom'}></ToolbarButton>
+              <ToolbarButton icon={<FaSync/>} setToolPanel={this.setToolPanel.bind(this)} buttonType={'Rotation'}></ToolbarButton>
+              <ToolbarButton icon={<FaArrowsAlt/>} setToolPanel={this.setToolPanel.bind(this)} buttonType={'Move'}></ToolbarButton>
+              <ToolbarButton icon={<FaBorderNone/>} setToolPanel={this.setToolPanel.bind(this)}></ToolbarButton>
             </div>
           </div>
           <div className="row" id="canvas-container-row">
@@ -162,7 +185,7 @@ class App extends Component {
           </div>
           <div className="row" id="tool-panel-container-row">
             <div className="col-4" id="tool-panel-container-col">
-              <RotationPanel></RotationPanel>
+              {this.displayToolPanel(this.state.currentPanel)}
             </div>
           </div>
         </div>

@@ -5,9 +5,9 @@ import React from 'react'
 
 import '../style/toolbarButton.css'
 
+export default function ToolbarButton(props) {
 
-export default function toolbarButton(props) {
     return (
-            <button className="toolbarButton">{props.icon}</button>
+            <button className="toolbarButton" onClick={() => props.setToolPanel(props.buttonType)}>{props.icon}</button>
     )
 }
