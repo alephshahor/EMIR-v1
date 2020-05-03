@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import '../style/pointsCanvas.css'
 
-export default class PointsCanvas extends Component {
+export default class MaskCanvas extends Component {
 
     constructor(props){
         super(props);
@@ -30,8 +30,8 @@ export default class PointsCanvas extends Component {
 
     drawPoints(){
         for(let i = 0; i < this.props.stelarPoints.length; i++){
-            this.drawPoint(this.props.stelarPoints[i].fixed_right_ascension * this.props.canvasWidth,
-                          this.props.stelarPoints[i].fixed_declination * this.props.canvasHeight)
+            this.drawPoint(this.props.stelarPoints[i].right_ascension * this.props.canvasWidth,
+                          this.props.stelarPoints[i].declination * this.props.canvasHeight)
         }
         
     }

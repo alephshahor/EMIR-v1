@@ -48,12 +48,10 @@ class App extends Component {
     window.addEventListener('resize', handleResize)
     handleResize();
 
-    console.log("Hi")
 
     let response = await fetch("http://localhost:8000/emir/")
     let stelarPoints = await response.json()
     let stateSetted = await this.setState({originalStelarPoints: stelarPoints})
-    let log = await console.log("Hi fucking javascript", stelarPoints)
     let treatPoints = await this.treatPoints(this.state.originalStelarPoints)
 
     /*fetch("http://localhost:8000/emir/").then(
@@ -91,12 +89,13 @@ class App extends Component {
         originalStelarPointsCopy.push({
           declination: declination_,
           right_ascension: right_ascension_,
-          prioriy: originalStelarPoints_[i]['prioriy'],
+          fixed_declination: null,
+          fixed_right_ascension: null,
+          priority: originalStelarPoints_[i]['priority'],
           pk: originalStelarPoints_[i]['pk']
         })
       }
       originalStelarPoints_ = originalStelarPointsCopy
-    
 
     let axisBounds = this.findAxisBounds(originalStelarPoints_)
 
@@ -164,12 +163,12 @@ class App extends Component {
 
     calculatePointInCanvas(axisBounds, stelarPoint){
 
-        let {pk, declination, right_ascension, prioriy} =  stelarPoint;
+        let {pk, declination, right_ascension, fixed_declination, fixed_right_ascension, priority} =  stelarPoint;
 
-        declination = (declination - axisBounds['minimum_declination']) / (axisBounds['maximum_declination'] - axisBounds['minimum_declination'])
-        right_ascension = (right_ascension - axisBounds['minimum_ascension']) / (axisBounds['maximum_ascension'] - axisBounds['minimum_ascension'])
+        fixed_declination = (declination - axisBounds['minimum_declination']) / (axisBounds['maximum_declination'] - axisBounds['minimum_declination'])
+        fixed_right_ascension = (right_ascension - axisBounds['minimum_ascension']) / (axisBounds['maximum_ascension'] - axisBounds['minimum_ascension'])
 
-        return {pk, declination, right_ascension, prioriy}
+        return {pk, declination, right_ascension, fixed_declination, fixed_right_ascension, priority}
     } 
 
     sinDegrees(angleDegrees) {
@@ -306,6 +305,15 @@ class App extends Component {
               canvasWidth={this.state.canvasWidth}
               canvasHeight={this.state.canvasWidth}
               stelarPoints={this.state.stelarPoints}
+              catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
+              emirVisionFieldDimension={this.state.emirVisionFieldDimension}
+            />
+           </div>
+           <div className="col-4" id="canvas-container-col">
+            <PointsCanvas id="points-canvas"
+              canvasWidth={this.state.canvasWidth}
+              canvasHeight={this.state.canvasWidth}
+              stelarPoints={[]}
               catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
               emirVisionFieldDimension={this.state.emirVisionFieldDimension}
             />
