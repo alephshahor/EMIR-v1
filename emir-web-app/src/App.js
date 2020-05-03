@@ -81,7 +81,6 @@ class App extends Component {
 
     let originalStelarPoints_ = originalStelarPoints;
 
-    if(this.state.applyRotation){
       let originalStelarPointsCopy = [];
       for(var i = 0; i < originalStelarPoints.length; i++){
         let declination = originalStelarPoints[i]['declination']
@@ -95,7 +94,7 @@ class App extends Component {
         })
       }
       originalStelarPoints_ = originalStelarPointsCopy
-    }
+    
 
     let axisBounds = this.findAxisBounds(originalStelarPoints_)
 
@@ -265,15 +264,9 @@ class App extends Component {
 
     rotate = async (angle) => {
       let changeState = await this.setState({
-        applyRotation: true
-      })
-      changeState = await this.setState({
         rotationAngle: angle 
       })
       this.treatPoints(this.state.originalStelarPoints)
-      changeState = await this.setState({
-        applyRotation: false
-      })
     }
 
 
