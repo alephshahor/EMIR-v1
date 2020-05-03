@@ -14,13 +14,33 @@
 
 #canvas-container-col{
     /* background-color: green;  */
+    position:relative;
     text-align: center;
     padding: 0;
     margin: 0;
 }
 
 #canvas-container-row{
+  
 }
+
+
+/*
+#points-canvas{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#roi-canvas{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;;
+}*/
 
 
 #buttons-container-col{
@@ -38,7 +58,6 @@
 
 
 #tool-panel-container-col{
-    background-color: darkgoldenrod;
     padding: 0.5vh;
 }
 

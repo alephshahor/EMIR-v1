@@ -41,6 +41,7 @@ class App extends Component {
 
     const handleResize = () => {
       this.calculateCanvasSize();
+      this.setMarginAfterCanvas();
     }
 
     window.addEventListener('resize', handleResize)
@@ -269,6 +270,12 @@ class App extends Component {
       this.treatPoints(this.state.originalStelarPoints)
     }
 
+    setMarginAfterCanvas(){
+      let margin = this.state.canvasHeight + 'px 0 0 0'
+      console.log(margin)
+      document.getElementById('tool-panel-container-col').style.margin = margin
+    }
+
 
 
   render(){
@@ -287,13 +294,21 @@ class App extends Component {
           </div>
           <div className="row" id="canvas-container-row">
            <div className="col-4" id="canvas-container-col">
-            <Canvas canvasWidth={this.state.canvasWidth}
+            <Canvas id="points-canvas"
+              canvasWidth={this.state.canvasWidth}
               canvasHeight={this.state.canvasWidth}
               stelarPoints={this.state.stelarPoints}
               catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
               emirVisionFieldDimension={this.state.emirVisionFieldDimension}
             />
-          </div>
+            <Canvas id="roi-canvas"
+              canvasWidth={this.state.canvasWidth}
+              canvasHeight={this.state.canvasWidth}
+              stelarPoints={this.state.stelarPoints}
+              catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
+              emirVisionFieldDimension={this.state.emirVisionFieldDimension}
+            />
+           </div>
           </div>
           <div className="row" id="tool-panel-container-row">
             <div className="col-4" id="tool-panel-container-col">
