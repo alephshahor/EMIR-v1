@@ -3,7 +3,8 @@ import logo from './logo.svg';
 import './style/App.css'
 
 import Navbar from './components/navbar'
-import Canvas from './components/canvas'
+import PointsCanvas from './components/pointsCanvas'
+import RoiCanvas from './components/roiCanvas'
 import ToolbarButton from './components/toolbarButton'
 import ZoomPanel from './components/zoomPanel'
 import RotationPanel from './components/rotationPanel'
@@ -294,14 +295,14 @@ class App extends Component {
           </div>
           <div className="row" id="canvas-container-row">
            <div className="col-4" id="canvas-container-col">
-            <Canvas id="points-canvas"
+            <PointsCanvas id="points-canvas"
               canvasWidth={this.state.canvasWidth}
               canvasHeight={this.state.canvasWidth}
               stelarPoints={this.state.stelarPoints}
               catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
               emirVisionFieldDimension={this.state.emirVisionFieldDimension}
             />
-            <Canvas id="roi-canvas"
+            <RoiCanvas id="roi-canvas"
               canvasWidth={this.state.canvasWidth}
               canvasHeight={this.state.canvasWidth}
               stelarPoints={this.state.stelarPoints}
