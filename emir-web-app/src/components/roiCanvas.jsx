@@ -17,8 +17,6 @@ export default class RoiCanvas extends Component {
     componentDidUpdate(prevProps){
         console.log("Component did update!")
         this.ctx = this.refs.canvas.getContext("2d")
-        this.centerX = this.props.canvasWidth / 2;
-        this.centerY = this.props.canvasHeight / 2;
         this.redrawCanvas();
     }
 
@@ -48,18 +46,53 @@ export default class RoiCanvas extends Component {
         console.log("Position: ", event.clientX, event.clientY)
         let { x,y } = this.calculateEmirFieldCenter(event)
         this.drawEmirVisionField(x,y)
+        this.calculatePointsInsideRoi()
     }
 
     calculateEmirFieldCenter(event){
         let offsetX = document.getElementById("roi-canvas").getBoundingClientRect().left
         let offsetY = document.getElementById("roi-canvas").getBoundingClientRect().top
-        let x = (event.clientX - offsetX) - ((this.props.canvasWidth * 0.1) / 2)
-        let y = (event.clientY - offsetY) - ((this.props.canvasWidth * 0.1) / 2)
+        let { roiWidth, roiHeight } = this.calculateRoiDimension()
+        let x = (event.clientX - offsetX) - (roiWidth / 2)
+        let y = (event.clientY - offsetY) - (roiHeight / 2)
         this.setState({
             xCenter: x,
             yCenter: y
         })
         return { x, y }
+    }
+
+    calculateRoiDimension(){
+        let roiWidth = (this.props.canvasWidth * this.props.emirVisionFieldDimension) / this.props.catalogDimensionInDegrees
+        let roiHeight = (this.props.canvasHeight * this.props.emirVisionFieldDimension) / this.props.catalogDimensionInDegrees
+        return {roiWidth, roiHeight}
+    }
+
+    // TODO: Simplify this!
+    calculatePointsInsideRoi(){
+       let {topLeftCorner, topRightCorner, bottomLeftCorner, bottomRighCorner} = this.calculateFixedCorners()
+       let stelarObjects = this.props.stelarPoints
+       let objectsInsideRoi = []
+       for(var i = 0; i < stelarObjects.length; i++){
+           if(stelarObjects[i].fixed_right_ascension < topRightCorner[0] && stelarObjects[i].fixed_right_ascension > topLeftCorner[0]
+           && stelarObjects[i].fixed_declination < topRightCorner[1] && stelarObjects[i].fixed_declination > bottomRighCorner[1]){
+                objectsInsideRoi.push(stelarObjects[i])
+           }
+       }
+       console.log(objectsInsideRoi)
+    }
+
+    // TODO: Simplify this, no need to calculate corners.
+    calculateFixedCorners(){
+        let {roiWidth, roiHeight} = this.calculateRoiDimension()
+        let centerX = this.state.xCenter
+        let centerY = this.state.yCenter
+        console.log(roiWidth, roiHeight, centerX, centerY)
+        let topLeftCorner = [(centerX - (roiWidth/2)) / this.props.canvasWidth, (centerY + (roiHeight/2)) / this.props.canvasHeight]
+        let topRightCorner = [(centerX + (roiWidth/2)) / this.props.canvasWidth, (centerY + (roiHeight/2)) / this.props.canvasHeight]
+        let bottomLeftCorner = [(centerX - (roiWidth/2)) / this.props.canvasWidth, (centerY - (roiHeight/2)) / this.props.canvasHeight]
+        let bottomRighCorner = [(centerX + (roiWidth/2)) / this.props.canvasWidth , (centerY - (roiHeight/2)) / this.props.canvasHeight]
+        return {topLeftCorner, topRightCorner, bottomLeftCorner, bottomRighCorner}
     }
 
     onMouseClickUp(event){
