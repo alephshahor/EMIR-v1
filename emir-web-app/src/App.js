@@ -21,6 +21,7 @@ class App extends Component {
     canvasHeight: window.innerWidth * 0.33, 
     originalStelarPoints: null,
     stelarPoints: null,
+    roiPoints: null,
     catalogDimensionInDegrees: null,
     emirVisionFieldDimension: 0.11,
     currentPanel: 'Zoom',
@@ -53,9 +54,16 @@ class App extends Component {
     let stelarPoints = await response.json()
     let stateSetted = await this.setState({originalStelarPoints: stelarPoints})
     let treatPoints = await this.treatPoints(this.state.originalStelarPoints)
- 
-  }
- 
+   }
+   /* fetchDataFromApi = async () => {
+
+    const response = await fetch("http://localhost:8000/emir/");
+    let stelarPoints = await response.json();
+    let trythis = await this.setState({originalStelarPoints: stelarPoints})
+    console.log("Cucu: " , this.state.originalStelarPoints)
+    return true;
+   } */
+
    treatPoints(originalStelarPoints){
 
     let originalStelarPoints_ = originalStelarPoints;
@@ -98,11 +106,69 @@ class App extends Component {
     }
 
     let stelarPoints_ = this.calculatePointsInCanvas(axisBounds, originalStelarPoints_)
-    console.log(stelarPoints_)
 
     this.setState({
       stelarPoints: stelarPoints_
     })
+   }
+
+   treatRoiPoints(originalStelarPoints){
+
+    let originalStelarPoints_ = originalStelarPoints;
+
+      let originalStelarPointsCopy = [];
+      for(var i = 0; i < originalStelarPoints.length; i++){
+        let declination = originalStelarPoints[i]['declination']
+        let right_ascension = originalStelarPoints[i]['right_ascension']
+        let { y_: declination_ , x_: right_ascension_ } = this.applyRotation(this.state.rotationAngle, right_ascension, declination)
+        originalStelarPointsCopy.push({
+          declination: declination_,
+          right_ascension: right_ascension_,
+          fixed_declination: null,
+          fixed_right_ascension: null,
+          priority: originalStelarPoints_[i]['priority'],
+          pk: originalStelarPoints_[i]['pk']
+        })
+      }
+      originalStelarPoints_ = originalStelarPointsCopy
+
+    let axisBounds = this.findAxisBounds(originalStelarPoints_)
+
+    let catalogAscensionDim = axisBounds.maximum_ascension - axisBounds.minimum_ascension
+    let catalogDeclinationDim = axisBounds.maximum_declination - axisBounds.minimum_declination
+
+    for(var i = 0; i < originalStelarPoints_.length; i++){
+      originalStelarPoints_[i]['fixed_right_ascension'] = originalStelarPoints_[i]['right_ascension'] -  axisBounds.minimum_ascension
+      originalStelarPoints_[i]['fixed_declination'] = originalStelarPoints_[i]['declination'] - axisBounds.minimum_declination 
+      originalStelarPoints_[i]['fixed_right_ascension'] /= catalogAscensionDim
+      originalStelarPoints_[i]['fixed_declination'] /= catalogDeclinationDim
+    }
+
+
+    /*
+    let ascensionCenter = axisBounds.minimum_ascension + (catalogAscensionDim / 2)
+    let declinationCenter = axisBounds.minimum_declination + (catalogDeclinationDim / 2)
+
+    let ascensionMinBound = ascensionCenter - 0.11 / 2;
+    let ascensionMaxBound = ascensionCenter + 0.11 / 2;
+
+    let declinationMinBound = declinationCenter - 0.11 / 2;
+    let declinationMaxBound = declinationCenter + 0.11 / 2;
+
+     axisBounds = { 
+      minimum_ascension: ascensionMinBound,
+      maximum_ascension: ascensionMaxBound,
+      minimum_declination: declinationMinBound,
+      maximum_declination: declinationMaxBound
+    }
+
+    let stelarPoints_ = this.calculatePointsInCanvas(axisBounds, originalStelarPoints_)
+    console.log(stelarPoints_)
+    */
+    this.setState({
+      roiPoints: originalStelarPoints_
+    })
+
    }
 
     findAxisBounds(stelarPoints){
@@ -251,7 +317,6 @@ class App extends Component {
 
     setMarginAfterCanvas(){
       let margin = this.state.canvasHeight + 'px 0 0 0'
-      console.log(margin)
       document.getElementById('tool-panel-container-col').style.margin = margin
     }
 
@@ -279,20 +344,21 @@ class App extends Component {
               stelarPoints={this.state.stelarPoints}
               catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
               emirVisionFieldDimension={this.state.emirVisionFieldDimension}
-            />
+            /> 
             <RoiCanvas id="roi-canvas"
               canvasWidth={this.state.canvasWidth}
               canvasHeight={this.state.canvasWidth}
               stelarPoints={this.state.stelarPoints}
               catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
               emirVisionFieldDimension={this.state.emirVisionFieldDimension}
+              displayRoiPoints={this.treatRoiPoints.bind(this)}
             />
            </div>
            <div className="col-4" id="canvas-container-col">
             <PointsCanvas id="points-canvas"
               canvasWidth={this.state.canvasWidth}
               canvasHeight={this.state.canvasWidth}
-              stelarPoints={[]}
+              stelarPoints={this.state.roiPoints}
               catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
               emirVisionFieldDimension={this.state.emirVisionFieldDimension}
             />

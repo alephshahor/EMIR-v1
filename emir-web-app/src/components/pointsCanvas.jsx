@@ -33,7 +33,6 @@ export default class PointsCanvas extends Component {
             this.drawPoint(this.props.stelarPoints[i].fixed_right_ascension * this.props.canvasWidth,
                           this.props.stelarPoints[i].fixed_declination * this.props.canvasHeight)
         }
-        
     }
 
     drawPoint(xPos, yPos){

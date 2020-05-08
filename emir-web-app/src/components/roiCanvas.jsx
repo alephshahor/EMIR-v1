@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import '../style/roiCanvas.css'
 
+// TODO: Change naming "xCenter" and "yCenter" for "roiCenterX" and "roiCenterY"
+// TODO: Change naming "drawEmirVisionField" for "drawEmirRoi"
+
 export default class RoiCanvas extends Component {
  constructor(props){
         super(props);
@@ -50,7 +53,8 @@ export default class RoiCanvas extends Component {
         this.dragging = true
         let { leftBottomRoiCornerX , leftBottomRoiCornerY } = this.calculateRoiBottomCorner(event)
         this.drawEmirVisionField(leftBottomRoiCornerX,leftBottomRoiCornerY)
-        this.calculatePointsInsideRoi()
+        let pointsInsideRoi = this.calculatePointsInsideRoi()
+        this.props.displayRoiPoints(pointsInsideRoi)
     }
 
     calculateRoiBottomCorner(event){
@@ -94,7 +98,8 @@ export default class RoiCanvas extends Component {
                 objectsInsideRoi.push(stelarObjects[i])
            }
        }
-       console.log(objectsInsideRoi)
+
+       return objectsInsideRoi
     }
 
     calculateRoiLimits = () => {
@@ -120,6 +125,8 @@ export default class RoiCanvas extends Component {
             this.clearCanvas()
             let { leftBottomRoiCornerX , leftBottomRoiCornerY } = this.calculateRoiBottomCorner(event)
             this.drawEmirVisionField(leftBottomRoiCornerX , leftBottomRoiCornerY)
+            let pointsInsideRoi = this.calculatePointsInsideRoi()
+            this.props.displayRoiPoints(pointsInsideRoi)
         }
     }
 
