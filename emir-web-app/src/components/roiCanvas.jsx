@@ -4,14 +4,13 @@ import '../style/roiCanvas.css'
 export default class RoiCanvas extends Component {
  constructor(props){
         super(props);
+        this.roiDisplayed = false
+        this.xCenter = 0
+        this.yCenter = 0
+        this.dragging = false
         this.onMouseClickDown = this.onMouseClickDown.bind(this)
         this.onMouseClickUp = this.onMouseClickUp.bind(this)
         this.onMouseMove = this.onMouseMove.bind(this)
-        this.state = {
-            dragging: false,
-            xCenter: 0,
-            yCenter: 0
-        }
     }
 
     componentDidUpdate(prevProps){
@@ -23,7 +22,12 @@ export default class RoiCanvas extends Component {
 
     redrawCanvas(){
         this.clearCanvas();
-        this.drawEmirVisionField(this.state.xCenter,this.state.yCenter)
+        if(this.roiDisplayed){
+            let {roiWidth, roiHeight} = this.calculateRoiDimension()
+            let leftBottomRoiCornerX = this.xCenter - (roiWidth  / 2)
+            let leftBottomRoiCornerY = this.yCenter - (roiHeight / 2)
+            this.drawEmirVisionField(leftBottomRoiCornerX, leftBottomRoiCornerY)
+        }
     }
         
     clearCanvas(){
@@ -41,25 +45,30 @@ export default class RoiCanvas extends Component {
     }
 
     onMouseClickDown(event){
-        this.redrawCanvas();
+        this.clearCanvas()
+        this.roiDisplayed = true
         this.dragging = true
-        console.log("Position: ", event.clientX, event.clientY)
-        let { x,y } = this.calculateEmirFieldCenter(event)
-        this.drawEmirVisionField(x,y)
+        let { leftBottomRoiCornerX , leftBottomRoiCornerY } = this.calculateRoiBottomCorner(event)
+        this.drawEmirVisionField(leftBottomRoiCornerX,leftBottomRoiCornerY)
         this.calculatePointsInsideRoi()
     }
 
-    calculateEmirFieldCenter(event){
+    calculateRoiBottomCorner(event){
+        let { xCenter, yCenter } = this.calculateRoiCenter(event) 
+        let { roiWidth, roiHeight } = this.calculateRoiDimension()
+        let leftBottomRoiCornerX = xCenter - (roiWidth  / 2)
+        let leftBottomRoiCornerY = yCenter - (roiHeight / 2)
+        return { leftBottomRoiCornerX, leftBottomRoiCornerY}
+    }
+
+    calculateRoiCenter(event){
         let offsetX = document.getElementById("roi-canvas").getBoundingClientRect().left
         let offsetY = document.getElementById("roi-canvas").getBoundingClientRect().top
-        let { roiWidth, roiHeight } = this.calculateRoiDimension()
-        let x = (event.clientX - offsetX) - (roiWidth / 2)
-        let y = (event.clientY - offsetY) - (roiHeight / 2)
-        this.setState({
-            xCenter: x,
-            yCenter: y
-        })
-        return { x, y }
+        let xCenter = (event.clientX - offsetX) 
+        let yCenter = (event.clientY - offsetY) 
+        this.xCenter = xCenter
+        this.yCenter = yCenter
+        return {xCenter, yCenter}
     }
 
     calculateRoiDimension(){
@@ -85,13 +94,17 @@ export default class RoiCanvas extends Component {
     // TODO: Simplify this, no need to calculate corners.
     calculateFixedCorners(){
         let {roiWidth, roiHeight} = this.calculateRoiDimension()
-        let centerX = this.state.xCenter
-        let centerY = this.state.yCenter
-        console.log(roiWidth, roiHeight, centerX, centerY)
+        let centerX = this.xCenter + (roiWidth / 2)
+        let centerY = this.yCenter + (roiHeight / 2)
+
+        console.log(centerX, centerY)
+        console.log(centerX / this.props.canvasWidth, centerY / this.props.canvasHeight)
+        
         let topLeftCorner = [(centerX - (roiWidth/2)) / this.props.canvasWidth, (centerY + (roiHeight/2)) / this.props.canvasHeight]
         let topRightCorner = [(centerX + (roiWidth/2)) / this.props.canvasWidth, (centerY + (roiHeight/2)) / this.props.canvasHeight]
         let bottomLeftCorner = [(centerX - (roiWidth/2)) / this.props.canvasWidth, (centerY - (roiHeight/2)) / this.props.canvasHeight]
         let bottomRighCorner = [(centerX + (roiWidth/2)) / this.props.canvasWidth , (centerY - (roiHeight/2)) / this.props.canvasHeight]
+        
         return {topLeftCorner, topRightCorner, bottomLeftCorner, bottomRighCorner}
     }
 
@@ -102,9 +115,9 @@ export default class RoiCanvas extends Component {
 
     onMouseMove(event){
         if(this.dragging){
-            this.redrawCanvas()
-            let { x,y } = this.calculateEmirFieldCenter(event)
-            this.drawEmirVisionField(x,y)
+            this.clearCanvas()
+            let { leftBottomRoiCornerX , leftBottomRoiCornerY } = this.calculateRoiBottomCorner(event)
+            this.drawEmirVisionField(leftBottomRoiCornerX , leftBottomRoiCornerY)
         }
     }
 

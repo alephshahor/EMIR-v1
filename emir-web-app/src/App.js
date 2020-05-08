@@ -53,30 +53,9 @@ class App extends Component {
     let stelarPoints = await response.json()
     let stateSetted = await this.setState({originalStelarPoints: stelarPoints})
     let treatPoints = await this.treatPoints(this.state.originalStelarPoints)
-
-    /*fetch("http://localhost:8000/emir/").then(
-      (response) => response.json()
-    ).then(
-      (stelarPoints) => this.setState({originalStelarPoints: stelarPoints})
-    ).then(
-      () => console.log("Hi 1", this.state.originalStelarPoints)
-    ).then(
-      () => this.treatPoints(this.state.originalStelarPoints)
-    )*/
-
-  //  let data = this.fetchDataFromApi().then(() => this.treatPoints(this.state.originalStelarPoints));
-
-   }
-
-   /* fetchDataFromApi = async () => {
-
-    const response = await fetch("http://localhost:8000/emir/");
-    let stelarPoints = await response.json();
-    let trythis = await this.setState({originalStelarPoints: stelarPoints})
-    console.log("Cucu: " , this.state.originalStelarPoints)
-    return true;
-   } */
-
+ 
+  }
+ 
    treatPoints(originalStelarPoints){
 
     let originalStelarPoints_ = originalStelarPoints;
