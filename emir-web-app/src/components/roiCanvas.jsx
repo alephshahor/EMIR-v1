@@ -79,33 +79,35 @@ export default class RoiCanvas extends Component {
 
     // TODO: Simplify this!
     calculatePointsInsideRoi(){
-       let {topLeftCorner, topRightCorner, bottomLeftCorner, bottomRighCorner} = this.calculateFixedCorners()
+       let {leftLimit, righLimit, topLimit, bottomLimit} = this.calculateRoiLimits()
+       
+       leftLimit /= this.props.canvasWidth
+       righLimit /= this.props.canvasWidth
+       topLimit  /= this.props.canvasHeight
+       bottomLimit /= this.props.canvasHeight
+
        let stelarObjects = this.props.stelarPoints
        let objectsInsideRoi = []
        for(var i = 0; i < stelarObjects.length; i++){
-           if(stelarObjects[i].fixed_right_ascension < topRightCorner[0] && stelarObjects[i].fixed_right_ascension > topLeftCorner[0]
-           && stelarObjects[i].fixed_declination < topRightCorner[1] && stelarObjects[i].fixed_declination > bottomRighCorner[1]){
+           if(stelarObjects[i].fixed_right_ascension < righLimit && stelarObjects[i].fixed_right_ascension > leftLimit
+           && stelarObjects[i].fixed_declination < topLimit && stelarObjects[i].fixed_declination > bottomLimit){
                 objectsInsideRoi.push(stelarObjects[i])
            }
        }
        console.log(objectsInsideRoi)
     }
 
-    // TODO: Simplify this, no need to calculate corners.
-    calculateFixedCorners(){
-        let {roiWidth, roiHeight} = this.calculateRoiDimension()
-        let centerX = this.xCenter + (roiWidth / 2)
-        let centerY = this.yCenter + (roiHeight / 2)
+    calculateRoiLimits = () => {
+        let xCenter = this.xCenter
+        let yCenter = this.yCenter
+        let { roiWidth, roiHeight } = this.calculateRoiDimension()
 
-        console.log(centerX, centerY)
-        console.log(centerX / this.props.canvasWidth, centerY / this.props.canvasHeight)
-        
-        let topLeftCorner = [(centerX - (roiWidth/2)) / this.props.canvasWidth, (centerY + (roiHeight/2)) / this.props.canvasHeight]
-        let topRightCorner = [(centerX + (roiWidth/2)) / this.props.canvasWidth, (centerY + (roiHeight/2)) / this.props.canvasHeight]
-        let bottomLeftCorner = [(centerX - (roiWidth/2)) / this.props.canvasWidth, (centerY - (roiHeight/2)) / this.props.canvasHeight]
-        let bottomRighCorner = [(centerX + (roiWidth/2)) / this.props.canvasWidth , (centerY - (roiHeight/2)) / this.props.canvasHeight]
-        
-        return {topLeftCorner, topRightCorner, bottomLeftCorner, bottomRighCorner}
+        let leftLimit = xCenter - (roiWidth / 2)
+        let righLimit = xCenter + (roiWidth / 2)
+        let topLimit = yCenter + (roiHeight / 2)
+        let bottomLimit = yCenter - (roiHeight / 2)
+
+        return {leftLimit, righLimit, topLimit, bottomLimit}
     }
 
     onMouseClickUp(event){
