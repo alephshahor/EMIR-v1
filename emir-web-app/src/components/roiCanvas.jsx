@@ -85,6 +85,50 @@ export default class RoiCanvas extends Component {
         return { leftBottomRoiCornerX, leftBottomRoiCornerY}
     }
 
+
+    calculateRoiCorners(event){
+        let { xCenter, yCenter } = this.calculateRoiCenter(event) 
+        let { roiWidth, roiHeight } = this.calculateRoiDimension()
+
+        let rotation = this.props.rotation
+
+        let corners = {
+            "topRight" : { x: (xCenter + (roiWidth / 2) * this.cosDegrees(rotation) - (roiHeight / 2) * this.sinDegrees(rotation)), 
+                     y: (yCenter + (roiWidth / 2) * this.sinDegrees(rotation) + (roiHeight / 2) * this.cosDegrees(rotation))},
+            "topLeft" : { x: (xCenter - (roiWidth / 2) * this.cosDegrees(rotation) - (roiHeight / 2) * this.sinDegrees(rotation)), 
+                     y: (yCenter - (roiWidth / 2) * this.sinDegrees(rotation) + (roiHeight / 2) * this.cosDegrees(rotation))},
+            "bottomLeft" : { x: (xCenter - (roiWidth / 2) * this.cosDegrees(rotation) + (roiHeight / 2) * this.sinDegrees(rotation)), 
+                     y: (yCenter - (roiWidth / 2) * this.sinDegrees(rotation) - (roiHeight / 2) * this.cosDegrees(rotation))},
+            "bottomRight" : { x: (xCenter + (roiWidth / 2) * this.cosDegrees(rotation) + (roiHeight / 2) * this.sinDegrees(rotation)), 
+                     y: (yCenter + (roiWidth / 2) * this.sinDegrees(rotation) - (roiHeight / 2) * this.cosDegrees(rotation))},
+        }
+
+        return corners;
+    }
+    
+    euclideanDistance(cA,cB){
+        return Math.sqrt(Math.pow(cA.x - cB.x, 2) + Math.pow(cA.y - cB.y, 2), 2)
+    }
+
+    calculateTriangleArea(cA,cB,p){
+        let base = this.euclideanDistance(cA, cB)
+        let baseCenter = { x: cA.x + ((cA.x - cB.x) / 2), y: cA.y + ((cA.y - cB.y) / 2) }
+        let height = this.euclideanDistance(baseCenter, p)
+        return (base * height) * 0.5
+    }
+
+    calculateRectangleArea(corners){
+        let width = this.euclideanDistance(corners['topRight'], corners['topLeft'])
+        let height = this.euclideanDistance(corners['bottomRight'], corners['topRight'])
+        return width * height
+    }
+
+    pointsInsideRoi(){
+        let corners = this.calculateRoiCorners()
+        let roiArea = this.calculateRectangleArea(corners)
+
+    }
+
     calculateRoiCenter(event){
         let offsetX = document.getElementById("roi-canvas").getBoundingClientRect().left
         let offsetY = document.getElementById("roi-canvas").getBoundingClientRect().top
@@ -112,7 +156,7 @@ export default class RoiCanvas extends Component {
 
        let stelarObjects = this.props.stelarPoints
        let objectsInsideRoi = []
-       for(var i = 0; i < stelarObjects.length; i++){
+       for(let i = 0; i < stelarObjects.length; i++){
            if(stelarObjects[i].fixed_right_ascension < righLimit && stelarObjects[i].fixed_right_ascension > leftLimit
            && stelarObjects[i].fixed_declination < topLimit && stelarObjects[i].fixed_declination > bottomLimit){
                 objectsInsideRoi.push(stelarObjects[i])

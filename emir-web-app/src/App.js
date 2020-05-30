@@ -350,10 +350,12 @@ class App extends Component {
               catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
               emirVisionFieldDimension={this.state.emirVisionFieldDimension}
             />
+            {/*
             <BarsCanvas id="bars-canvas"
               canvasWidth={this.state.canvasWidth}
               canvasHeight={this.state.canvasWidth}
             />
+            */}
            </div>
           </div>
           <div className="row" id="tool-panel-container-row">
