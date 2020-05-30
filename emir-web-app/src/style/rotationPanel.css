@@ -7,3 +7,17 @@
     margin-bottom: 0.75vh;
     text-align: center;
 }
+
+#rotation-panel-row{
+    justify-content: center;
+}
+
+#rotation-panel-col{
+    padding: 0;
+    margin: 0;
+}
+
+#rotation-panel-col-2{
+    padding: 0;
+    margin: 0;
+}

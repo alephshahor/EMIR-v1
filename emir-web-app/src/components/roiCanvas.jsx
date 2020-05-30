@@ -37,14 +37,34 @@ export default class RoiCanvas extends Component {
         this.ctx.clearRect(0,0, this.props.canvasWidth, this.props.canvasHeight);
     }
 
+    sinDegrees(angleDegrees) {
+      return Math.sin(angleDegrees*Math.PI/180);
+    };
+
+    cosDegrees(angleDegrees) {
+      return Math.cos(angleDegrees*Math.PI/180);
+    };
+
+    applyRotation(rotation, x, y){
+      let x_ = (x * this.cosDegrees(rotation)) - (y * this.sinDegrees(rotation))
+      let y_ = (y * this.cosDegrees(rotation)) + (x * this.sinDegrees(rotation))
+      return {x_ , y_}
+    }
+
+
     drawEmirVisionField(x,y){
-        this.ctx.beginPath();
         this.ctx.fillStyle = "#2be828"
         this.ctx.globalAlpha = 0.75;
-        this.ctx.rect(x,y, (this.props.canvasWidth * this.props.emirVisionFieldDimension) / this.props.catalogDimensionInDegrees, 
-                           (this.props.canvasHeight * this.props.emirVisionFieldDimension) / this.props.catalogDimensionInDegrees)
-        this.ctx.fill()
+        let width = (this.props.canvasWidth * this.props.emirVisionFieldDimension) / this.props.catalogDimensionInDegrees
+        let height =  (this.props.canvasHeight * this.props.emirVisionFieldDimension) / this.props.catalogDimensionInDegrees
+        let {roiWidth, roiHeight} = this.calculateRoiDimension()
+        this.ctx.save()
+        this.ctx.beginPath();
+        this.ctx.translate( x + roiWidth/2, y + roiHeight/2 );
+        this.ctx.rotate(this.props.rotation * Math.PI / 180)
+        this.ctx.fillRect( -roiWidth / 2, -roiHeight / 2, width, height)
         this.ctx.globalAlpha = 1;
+        this.ctx.restore()
     }
 
     onMouseClickDown(event){

@@ -5,6 +5,7 @@ import './style/App.css'
 import Navbar from './components/navbar'
 import PointsCanvas from './components/pointsCanvas'
 import RoiCanvas from './components/roiCanvas'
+import BarsCanvas from './components/barsCanvas'
 import ToolbarButton from './components/toolbarButton'
 import ZoomPanel from './components/zoomPanel'
 import RotationPanel from './components/rotationPanel'
@@ -22,6 +23,7 @@ class App extends Component {
     originalStelarPoints: null,
     stelarPoints: null,
     roiPoints: null,
+    roiRotation: 0,
     catalogDimensionInDegrees: null,
     emirVisionFieldDimension: 0.11,
     currentPanel: 'Zoom',
@@ -144,27 +146,6 @@ class App extends Component {
       originalStelarPoints_[i]['fixed_declination'] /= catalogDeclinationDim
     }
 
-
-    /*
-    let ascensionCenter = axisBounds.minimum_ascension + (catalogAscensionDim / 2)
-    let declinationCenter = axisBounds.minimum_declination + (catalogDeclinationDim / 2)
-
-    let ascensionMinBound = ascensionCenter - 0.11 / 2;
-    let ascensionMaxBound = ascensionCenter + 0.11 / 2;
-
-    let declinationMinBound = declinationCenter - 0.11 / 2;
-    let declinationMaxBound = declinationCenter + 0.11 / 2;
-
-     axisBounds = { 
-      minimum_ascension: ascensionMinBound,
-      maximum_ascension: ascensionMaxBound,
-      minimum_declination: declinationMinBound,
-      maximum_declination: declinationMaxBound
-    }
-
-    let stelarPoints_ = this.calculatePointsInCanvas(axisBounds, originalStelarPoints_)
-    console.log(stelarPoints_)
-    */
     this.setState({
       roiPoints: originalStelarPoints_
     })
@@ -236,7 +217,7 @@ class App extends Component {
           return (<ZoomPanel zoomIn={this.zoomIn} zoomOut={this.zoomOut}></ZoomPanel>)
           break;
         case 'Rotation':
-          return (<RotationPanel rotate={this.rotate}></RotationPanel>)
+          return (<RotationPanel rotate={this.rotate} rotateRoi={this.rotateRoi}></RotationPanel>)
           break;
         case 'Move':
           return (<MovePanel moveLeft={this.moveLeft} moveRight={this.moveRight}
@@ -315,6 +296,12 @@ class App extends Component {
       this.treatPoints(this.state.originalStelarPoints)
     }
 
+    rotateRoi = (angle) => {
+      this.setState({
+        roiRotation: angle
+      })
+    }
+
     setMarginAfterCanvas(){
       let margin = this.state.canvasHeight + 'px 0 0 0'
       document.getElementById('tool-panel-container-col').style.margin = margin
@@ -349,6 +336,7 @@ class App extends Component {
               canvasWidth={this.state.canvasWidth}
               canvasHeight={this.state.canvasWidth}
               stelarPoints={this.state.stelarPoints}
+              rotation={this.state.roiRotation}
               catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
               emirVisionFieldDimension={this.state.emirVisionFieldDimension}
               displayRoiPoints={this.treatRoiPoints.bind(this)}
@@ -361,6 +349,10 @@ class App extends Component {
               stelarPoints={this.state.roiPoints}
               catalogDimensionInDegrees={this.state.catalogDimensionInDegrees} 
               emirVisionFieldDimension={this.state.emirVisionFieldDimension}
+            />
+            <BarsCanvas id="bars-canvas"
+              canvasWidth={this.state.canvasWidth}
+              canvasHeight={this.state.canvasWidth}
             />
            </div>
           </div>
