@@ -123,6 +123,7 @@ export default class RoiCanvas extends Component {
         return width * height
     }
 
+    // TODO: Finish
     pointsInsideRoi(){
         let corners = this.calculateRoiCorners()
         let roiArea = this.calculateRectangleArea(corners)
